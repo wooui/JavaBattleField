@@ -12,14 +12,15 @@ public class ReceiveMailTest {
 	public static void main(String[] args) {
 		Properties props = System.getProperties();
 		String host = "pop3.163.com";
-		String username = "jasonyifei@163.com";
-		String password = "111111";
+	//	String username = "jasonyifei@163.com";
+	//	String password = "111111";
 		String provider = "pop3";
 		
 		try{
-			Session ss = Session.getDefaultInstance(props);
+			Session ss = Session.getDefaultInstance(props, new MailAuthenticator());
 			Store store = ss.getStore(provider);
-			store.connect(host, username, password);
+		//	store.connect(host, username, password);
+			store.connect(host, null, null);
 			Folder inbox = store.getFolder("INBOX");
 			if(inbox == null){
 				System.out.println("no inbox");
@@ -29,11 +30,11 @@ public class ReceiveMailTest {
 			System.out.println("total email:"+inbox.getMessageCount());
 			Message[] messages = inbox.getMessages();
 			for(Message msg : messages){
-				String from = InternetAddress.toString(msg.getFrom());
+				String from = MailUtil.getChineseFrom(InternetAddress.toString(msg.getFrom()));
 				if(from != null){
 					System.out.println(from);
 				}
-				String replyTo = InternetAddress.toString(msg.getReplyTo());
+				String replyTo = MailUtil.getChineseFrom(InternetAddress.toString(msg.getReplyTo()));
 				if(replyTo != null){
 					System.out.println(replyTo);
 				}
